@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.julio.cursomc.domain.Categoria;
+import com.julio.cursomc.resources.exception.StandardError;
 import com.julio.cursomc.services.CategoriaService;
+
+import javassist.tools.rmi.ObjectNotFoundException;
 
 @RestController
 @RequestMapping(value="/categorias")
@@ -21,8 +24,10 @@ public class CategoriaResources {
 	private CategoriaService service;
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
+	public ResponseEntity<?> find(@PathVariable Integer id)  {
 		Categoria obj = service.buscar(id);
 		return ResponseEntity.ok().body(obj);
+		
 	}
 }
+
