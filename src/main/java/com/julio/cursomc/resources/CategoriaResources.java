@@ -1,8 +1,5 @@
 package com.julio.cursomc.resources;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,10 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.julio.cursomc.domain.Categoria;
-import com.julio.cursomc.resources.exception.StandardError;
 import com.julio.cursomc.services.CategoriaService;
-
-import javassist.tools.rmi.ObjectNotFoundException;
 
 @RestController
 @RequestMapping(value="/categorias")
