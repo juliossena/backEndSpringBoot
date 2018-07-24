@@ -10,7 +10,6 @@ import com.julio.cursomc.domain.ItemPedido;
 import com.julio.cursomc.domain.PagamentoComBoleto;
 import com.julio.cursomc.domain.Pedido;
 import com.julio.cursomc.domain.enums.EstadoPagamento;
-import com.julio.cursomc.repositories.ClienteRepository;
 import com.julio.cursomc.repositories.ItemPedidoRepository;
 import com.julio.cursomc.repositories.PagamentoRepository;
 import com.julio.cursomc.repositories.PedidoRepository;
