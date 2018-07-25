@@ -13,6 +13,7 @@ import com.julio.cursomc.services.SmtpEmailService;
 @Profile("dev")
 public class DevConfig {
 	
+	
 	@Bean
 	public boolean instantiateDatabase() throws ParseException {
 		return true;
