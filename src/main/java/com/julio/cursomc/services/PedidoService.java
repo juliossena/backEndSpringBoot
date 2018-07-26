@@ -4,15 +4,22 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.julio.cursomc.domain.Cliente;
 import com.julio.cursomc.domain.ItemPedido;
 import com.julio.cursomc.domain.PagamentoComBoleto;
 import com.julio.cursomc.domain.Pedido;
 import com.julio.cursomc.domain.enums.EstadoPagamento;
+import com.julio.cursomc.domain.enums.Perfil;
 import com.julio.cursomc.repositories.ItemPedidoRepository;
 import com.julio.cursomc.repositories.PagamentoRepository;
 import com.julio.cursomc.repositories.PedidoRepository;
+import com.julio.cursomc.security.UserSS;
+import com.julio.cursomc.services.exceptions.AuthorizationException;
 import com.julio.cursomc.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -41,8 +48,12 @@ public class PedidoService {
 
 	public Pedido find(Integer id) {
 		Optional<Pedido> obj = repo.findById(id);
-		return obj.orElseThrow(() -> new ObjectNotFoundException(
-				"Objeto não encontrado! Id: " + id + ", Tipo: " + Pedido.class.getName()));
+		UserSS user = UserService.authenticated();
+	    if (user==null || !user.hasRole(Perfil.ADMIN) && !obj.get().getCliente().getId().equals(user.getId())) {
+	        throw new AuthorizationException("Acesso negado");
+	    }
+	 
+		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Pedido.class.getName()));
 	}
 
 	public Pedido insert(Pedido obj) {
@@ -66,5 +77,16 @@ public class PedidoService {
 		itemPedidoRepository.saveAll(obj.getItens());
 		emailService.sendOrderConfirmationHtmlEmail(obj);
 		return obj;
+	}
+	
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		UserSS user = UserService.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso Negado");
+		}
+		
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente = clienteService.find(user.getId());
+		return repo.findByCliente(cliente, pageRequest);
 	}
 }
